@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1734601115104,
+      "tag": "0000_nasty_nekra",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1735653313371,
+      "tag": "0001_awesome_blue_marvel",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1735796742836,
+      "tag": "0002_purple_network",
+      "breakpoints": true
+    }
+  ]
+}

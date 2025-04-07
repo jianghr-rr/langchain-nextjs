@@ -1,0 +1,8 @@
+{
+    "success": "成功",
+    "error": "错误",
+    "illegalArgument": "非法参数",
+    "needLogin": "需要登录",
+    "businessError": "业务错误",
+    "databaseError": "数据库连接错误"
+}

@@ -1,0 +1,5 @@
+{
+  "ecmaVersion": "es2022",
+  "module": false,
+  "files": "./src/**/*.js"
+}

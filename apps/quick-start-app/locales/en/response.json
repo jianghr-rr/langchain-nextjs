@@ -1,0 +1,8 @@
+{
+    "success": "SUCCESS",
+    "error": "ERROR",
+    "illegalArgument": "ILLEGAL_ARGUMENT",
+    "needLogin": "NEED_LOGIN",
+    "businessError": "BUSINESS_ERROR",
+    "databaseError": "DATABASE_ERROR"
+}

@@ -1,0 +1,250 @@
+// import { sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
+import {
+  mysqlTable,
+  index,
+  unique,
+  int,
+  timestamp,
+  varchar,
+  tinyint,
+  decimal,
+  datetime,
+  text,
+  bigint,
+} from 'drizzle-orm/mysql-core';
+
+export const mmallCart = mysqlTable(
+  'mmall_cart',
+  {
+    id: int('id').autoincrement().primaryKey().notNull(),
+    userId: int('userId').notNull(),
+    productId: int('productId'),
+    quantity: int('quantity'),
+    checked: int('checked'),
+    createTime: timestamp('createTime', { mode: 'string' })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updateTime: timestamp('updateTime', { mode: 'string' })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => {
+    return {
+      userIdIdx: index('mmall_cart__user_id__idx').on(table.userId),
+      mmallCartUserIdUnique: unique('mmall_cart__user_id__unique').on(
+        table.userId
+      ),
+    };
+  }
+);
+
+export const mmallCategory = mysqlTable(
+  'mmall_category',
+  {
+    id: bigint('id', { mode: 'number' }).autoincrement().notNull(),
+    parentId: int('parentId'),
+    name: varchar('name', { length: 255 }),
+    status: tinyint('status').default(1),
+    sortOrder: int('sortOrder'),
+    createTime: timestamp('createTime', { mode: 'string' })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updateTime: timestamp('updateTime', { mode: 'string' })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => {
+    return {
+      idIdx: index('mmall_category_id__idx').on(table.id),
+      id: unique('id').on(table.id),
+      mmallCategoryIdUnique: unique('mmall_category_id__unique').on(table.id),
+    };
+  }
+);
+
+export const mmallOrder = mysqlTable(
+  'mmall_order',
+  {
+    id: bigint('id', { mode: 'number' }).autoincrement().notNull(),
+    orderNo: bigint('orderNo', { mode: 'number' }),
+    userId: int('userId'),
+    shippingId: int('shippingId'),
+    payment: decimal('payment', { precision: 20, scale: 2 }),
+    paymentType: int('paymentType'),
+    postage: int('postage'),
+    status: int('status'),
+    paymentTime: datetime('paymentTime', { mode: 'string' }),
+    sendTime: datetime('sendTime', { mode: 'string' }),
+    endTime: datetime('endTime', { mode: 'string' }),
+    closeTime: datetime('closeTime', { mode: 'string' }),
+    createTime: datetime('createTime', { mode: 'string' }),
+    updateTime: datetime('updateTime', { mode: 'string' }),
+  },
+  (table) => {
+    return {
+      idIdx: index('mmall_order_id__idx').on(table.id),
+      id: unique('id').on(table.id),
+      mmallOrderIdUnique: unique('mmall_order_id__unique').on(table.id),
+    };
+  }
+);
+
+export const mmallOrderItem = mysqlTable(
+  'mmall_order_item',
+  {
+    id: int('id').autoincrement().notNull(),
+    userId: int('userId'),
+    orderNo: bigint('orderNo', { mode: 'number' }),
+    productId: int('productId'),
+    productName: varchar('productName', { length: 100 }),
+    productImage: varchar('productImage', { length: 500 }),
+    currentUnitPrice: decimal('currentUnitPrice', { precision: 20, scale: 2 }),
+    quantity: int('quantity'),
+    totalPrice: decimal('totalPrice', { precision: 20, scale: 2 }),
+    createTime: datetime('createTime', { mode: 'string' }),
+    updateTime: datetime('updateTime', { mode: 'string' }),
+  },
+  (table) => {
+    return {
+      idIdxOrderNo: index('mmall_order_item_id__idx__order_no').on(
+        table.id,
+        table.orderNo
+      ),
+      mmallOrderItemIdUnique: unique('mmall_order_item_id__unique').on(
+        table.id
+      ),
+    };
+  }
+);
+
+export const mmallPayInfo = mysqlTable(
+  'mmall_pay_info',
+  {
+    id: bigint('id', { mode: 'number' }).autoincrement().notNull(),
+    userId: int('userId'),
+    orderNo: bigint('orderNo', { mode: 'number' }),
+    payPlatform: int('payPlatform'),
+    platformNumber: varchar('platformNumber', { length: 200 }),
+    platformStatus: varchar('platformStatus', { length: 20 }),
+    createTime: timestamp('createTime', { mode: 'string' })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updateTime: timestamp('updateTime', { mode: 'string' })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => {
+    return {
+      idIdx: index('mmall_pay_info_id__idx').on(table.id),
+      id: unique('id').on(table.id),
+      mmallPayInfoIdUnique: unique('mmall_pay_info_id__unique').on(table.id),
+    };
+  }
+);
+
+export const mmallProduct = mysqlTable(
+  'mmall_product',
+  {
+    id: bigint('id', { mode: 'number' }).autoincrement().notNull(),
+    categoryId: int('categoryId').notNull(),
+    name: varchar('name', { length: 100 }).notNull(),
+    subtitle: varchar('subtitle', { length: 200 }),
+    mainImage: varchar('mainImage', { length: 500 }),
+    subImages: text('subImages'),
+    detail: text('detail'),
+    price: decimal('price', { precision: 20, scale: 2 }).notNull(),
+    stock: int('stock').notNull(),
+    status: int('status').default(1),
+    createTime: timestamp('createTime', { mode: 'string' })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updateTime: timestamp('updateTime', { mode: 'string' })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => {
+    return {
+      idIdx: index('mmall_product_id__idx').on(table.id),
+      id: unique('id').on(table.id),
+      mmallProductIdUnique: unique('mmall_product_id__unique').on(table.id),
+    };
+  }
+);
+
+export const mmallShipping = mysqlTable(
+  'mmall_shipping',
+  {
+    id: bigint('id', { mode: 'number' }).autoincrement().notNull(),
+    userId: int('userId'),
+    receiverName: varchar('receiverName', { length: 20 }),
+    receiverPhone: varchar('receiverPhone', { length: 20 }),
+    receiverMobile: varchar('receiverMobile', { length: 20 }),
+    receiverProvince: varchar('receiverProvince', { length: 20 }),
+    receiverCity: varchar('receiverCity', { length: 20 }),
+    receiverDistrict: varchar('receiverDistrict', { length: 20 }),
+    receiverAddress: varchar('receiverAddress', { length: 200 }),
+    receiverZip: varchar('receiverZip', { length: 6 }),
+    createTime: timestamp('createTime', { mode: 'string' })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updateTime: timestamp('updateTime', { mode: 'string' })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => {
+    return {
+      idIdx: index('mmall_shipping_id__idx').on(table.id),
+      id: unique('id').on(table.id),
+      mmallShippingIdUnique: unique('mmall_shipping_id__unique').on(table.id),
+    };
+  }
+);
+
+export const mmallUser = mysqlTable(
+  'mmall_user',
+  {
+    id: bigint('id', { mode: 'number' }).autoincrement().notNull(),
+    username: varchar('username', { length: 50 }).notNull(),
+    password: varchar('password', { length: 50 }).notNull(),
+    email: varchar('email', { length: 50 }),
+    phone: varchar('phone', { length: 20 }),
+    question: varchar('question', { length: 100 }),
+    answer: varchar('answer', { length: 100 }),
+    role: int('role'),
+    createTime: timestamp('createTime', { mode: 'string' })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updateTime: timestamp('updateTime', { mode: 'string' })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => {
+    return {
+      id: unique('id').on(table.id),
+      userNameUnique: unique('user_name_unique').on(table.username),
+    };
+  }
+);
+
+// 创建 sessions 表
+export const sessions = mysqlTable(
+  'sessions',
+  {
+    id: bigint('id', { mode: 'number' }).autoincrement().notNull(),
+    userId: varchar('userId', { length: 36 }).notNull(),
+    expiresAt: datetime('expiresAt').notNull(), // 过期时间
+    createdAt: datetime('createdAt').default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: datetime('updatedAt').default(
+      sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`
+    ),
+    ipAddress: varchar('ipAddress', { length: 45 }), // IP 地址，支持 IPv4 和 IPv6
+    userAgent: text('userAgent'), // 用户代理字符串
+  },
+  (table) => {
+    return {
+      id: unique('id').on(table.id),
+      userNameUnique: unique('userId').on(table.userId),
+    };
+  }
+);

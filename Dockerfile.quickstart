@@ -1,0 +1,90 @@
+ARG NODE_VERSION=21.5.0
+ARG ALPINE_VERSION=3.18
+
+#############################################################
+# Stage 1 - App extraction / pruning                        #
+#############################################################
+FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS app-builder
+
+RUN apk update && apk add build-base git \
+    && apk add --no-cache g++ openssl cairo-dev jpeg-dev pango-dev giflib-dev \
+    && apk add libmount
+
+WORKDIR /app
+
+
+COPY --link package.json turbo.json ./
+
+# We can't run turbo without yarn install first, let's install locally and make sure
+# both local and docker are aligned on the package.json version.
+RUN TURBO_VERSION=$(cat package.json | jq '.devDependencies["turbo"]' -r) npm i -g turbo@${TURBO_VERSION}
+
+COPY --link . .
+
+# https://turbo.build/repo/docs/handbook/deploying-with-docker
+RUN turbo prune --scope=quick-start-app --docker --out-dir=./out/quick-start-app/
+
+#############################################################
+# Stage 2 - App installation                                #
+#############################################################
+
+FROM app-builder as app-installer
+
+WORKDIR /app
+
+# First install the dependencies (as they change less often)
+COPY --link .gitignore ./
+COPY .npmrc ./
+
+RUN npm install pnpm@10.7.0 -g --force
+RUN pnpm install
+
+# Alternatively we can use a build cache (buildx)
+#RUN --mount=type=cache,target=/root/.yarn3-cache,id=yarn3-cache \
+#    YARN_CACHE_FOLDER=/root/.yarn3-cache \
+#    yarn install --inline-builds
+
+# Build the project
+COPY --from=app-builder /app/out/quick-start-app/full/ .
+COPY --link .gitignore turbo.json tsconfig.base.json ./
+
+# RUN npm run migrations-generate-quick-start-app
+RUN npm run build-quick-start-app
+
+#############################################################
+# Stage 3 - App runner                                      #
+#############################################################
+FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS app-runner
+
+RUN apk add --no-cache tzdata bash && corepack enable
+
+WORKDIR /app
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Set the correct permission for prerender cache
+RUN mkdir .next
+RUN chown nextjs:nodejs .next
+
+USER nextjs
+
+COPY --from=app-installer --chown=nextjs:nodejs /app/apps/quick-start-app/next.config.js \
+                    /app/apps/quick-start-app/package.json \
+                    ./
+
+# Automatically leverage output traces to reduce image size
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=app-installer --chown=nextjs:nodejs /app/apps/quick-start-app/.next/standalone ./
+COPY --from=app-installer --chown=nextjs:nodejs /app/apps/quick-start-app/.next/static ./apps/quick-start-app/.next/static
+COPY --from=app-installer --chown=nextjs:nodejs /app/apps/quick-start-app/public ./apps/quick-start-app/public
+
+
+EXPOSE 4004
+
+ENV PORT 4004
+
+# server.js is created by next build from the standalone output
+# https://nextjs.org/docs/pages/api-reference/next-config-js/output
+CMD HOSTNAME="0.0.0.0" node apps/quick-start-app/server.js
+

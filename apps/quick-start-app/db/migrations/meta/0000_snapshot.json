@@ -1,0 +1,816 @@
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "prevId": "",
+  "version": "5",
+  "dialect": "mysql",
+  "tables": {
+    "mmall_cart": {
+      "name": "mmall_cart",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "userId": {
+          "autoincrement": false,
+          "name": "userId",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "productId": {
+          "autoincrement": false,
+          "name": "productId",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "quantity": {
+          "autoincrement": false,
+          "name": "quantity",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "checked": {
+          "autoincrement": false,
+          "name": "checked",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createTime": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "createTime",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updateTime": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "updateTime",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "mmall_cart__user_id__idx": {
+          "name": "mmall_cart__user_id__idx",
+          "columns": [
+            "userId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "uniqueConstraints": {
+        "mmall_cart__user_id__unique": {
+          "name": "mmall_cart__user_id__unique",
+          "columns": [
+            "userId"
+          ]
+        }
+      }
+    },
+    "mmall_category": {
+      "name": "mmall_category",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "bigint(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "parentId": {
+          "autoincrement": false,
+          "name": "parentId",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "default": 1,
+          "autoincrement": false,
+          "name": "status",
+          "type": "tinyint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sortOrder": {
+          "autoincrement": false,
+          "name": "sortOrder",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createTime": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "createTime",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updateTime": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "updateTime",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "mmall_category_id__idx": {
+          "name": "mmall_category_id__idx",
+          "columns": [
+            "id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "uniqueConstraints": {
+        "id": {
+          "name": "id",
+          "columns": [
+            "id"
+          ]
+        },
+        "mmall_category_id__unique": {
+          "name": "mmall_category_id__unique",
+          "columns": [
+            "id"
+          ]
+        }
+      }
+    },
+    "mmall_order": {
+      "name": "mmall_order",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "bigint(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "orderNo": {
+          "autoincrement": false,
+          "name": "orderNo",
+          "type": "bigint(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "userId": {
+          "autoincrement": false,
+          "name": "userId",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "shippingId": {
+          "autoincrement": false,
+          "name": "shippingId",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "payment": {
+          "autoincrement": false,
+          "name": "payment",
+          "type": "decimal(20,2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "paymentType": {
+          "autoincrement": false,
+          "name": "paymentType",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "postage": {
+          "autoincrement": false,
+          "name": "postage",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "autoincrement": false,
+          "name": "status",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "paymentTime": {
+          "autoincrement": false,
+          "name": "paymentTime",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sendTime": {
+          "autoincrement": false,
+          "name": "sendTime",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "endTime": {
+          "autoincrement": false,
+          "name": "endTime",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "closeTime": {
+          "autoincrement": false,
+          "name": "closeTime",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createTime": {
+          "autoincrement": false,
+          "name": "createTime",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updateTime": {
+          "autoincrement": false,
+          "name": "updateTime",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "mmall_order_id__idx": {
+          "name": "mmall_order_id__idx",
+          "columns": [
+            "id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "uniqueConstraints": {
+        "id": {
+          "name": "id",
+          "columns": [
+            "id"
+          ]
+        },
+        "mmall_order_id__unique": {
+          "name": "mmall_order_id__unique",
+          "columns": [
+            "id"
+          ]
+        }
+      }
+    },
+    "mmall_order_item": {
+      "name": "mmall_order_item",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "userId": {
+          "autoincrement": false,
+          "name": "userId",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "orderNo": {
+          "autoincrement": false,
+          "name": "orderNo",
+          "type": "bigint(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "productId": {
+          "autoincrement": false,
+          "name": "productId",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "productName": {
+          "autoincrement": false,
+          "name": "productName",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "productImage": {
+          "autoincrement": false,
+          "name": "productImage",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currentUnitPrice": {
+          "autoincrement": false,
+          "name": "currentUnitPrice",
+          "type": "decimal(20,2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "quantity": {
+          "autoincrement": false,
+          "name": "quantity",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "totalPrice": {
+          "autoincrement": false,
+          "name": "totalPrice",
+          "type": "decimal(20,2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createTime": {
+          "autoincrement": false,
+          "name": "createTime",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updateTime": {
+          "autoincrement": false,
+          "name": "updateTime",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "mmall_order_item_id__idx__order_no": {
+          "name": "mmall_order_item_id__idx__order_no",
+          "columns": [
+            "id",
+            "orderNo"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "uniqueConstraints": {
+        "mmall_order_item_id__unique": {
+          "name": "mmall_order_item_id__unique",
+          "columns": [
+            "id"
+          ]
+        }
+      }
+    },
+    "mmall_pay_info": {
+      "name": "mmall_pay_info",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "bigint(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "userId": {
+          "autoincrement": false,
+          "name": "userId",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "orderNo": {
+          "autoincrement": false,
+          "name": "orderNo",
+          "type": "bigint(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "payPlatform": {
+          "autoincrement": false,
+          "name": "payPlatform",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "platformNumber": {
+          "autoincrement": false,
+          "name": "platformNumber",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "platformStatus": {
+          "autoincrement": false,
+          "name": "platformStatus",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createTime": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "createTime",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updateTime": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "updateTime",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "mmall_pay_info_id__idx": {
+          "name": "mmall_pay_info_id__idx",
+          "columns": [
+            "id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "uniqueConstraints": {
+        "id": {
+          "name": "id",
+          "columns": [
+            "id"
+          ]
+        },
+        "mmall_pay_info_id__unique": {
+          "name": "mmall_pay_info_id__unique",
+          "columns": [
+            "id"
+          ]
+        }
+      }
+    },
+    "mmall_product": {
+      "name": "mmall_product",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "bigint(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "categoryId": {
+          "autoincrement": false,
+          "name": "categoryId",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subtitle": {
+          "autoincrement": false,
+          "name": "subtitle",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mainImage": {
+          "autoincrement": false,
+          "name": "mainImage",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "subImages": {
+          "autoincrement": false,
+          "name": "subImages",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "detail": {
+          "autoincrement": false,
+          "name": "detail",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "price": {
+          "autoincrement": false,
+          "name": "price",
+          "type": "decimal(20,2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "stock": {
+          "autoincrement": false,
+          "name": "stock",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "default": 1,
+          "autoincrement": false,
+          "name": "status",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createTime": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "createTime",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updateTime": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "updateTime",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "mmall_product_id__idx": {
+          "name": "mmall_product_id__idx",
+          "columns": [
+            "id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "uniqueConstraints": {
+        "id": {
+          "name": "id",
+          "columns": [
+            "id"
+          ]
+        },
+        "mmall_product_id__unique": {
+          "name": "mmall_product_id__unique",
+          "columns": [
+            "id"
+          ]
+        }
+      }
+    },
+    "mmall_shipping": {
+      "name": "mmall_shipping",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "bigint(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "userId": {
+          "autoincrement": false,
+          "name": "userId",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "receiverName": {
+          "autoincrement": false,
+          "name": "receiverName",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "receiverPhone": {
+          "autoincrement": false,
+          "name": "receiverPhone",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "receiverMobile": {
+          "autoincrement": false,
+          "name": "receiverMobile",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "receiverProvince": {
+          "autoincrement": false,
+          "name": "receiverProvince",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "receiverCity": {
+          "autoincrement": false,
+          "name": "receiverCity",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "receiverDistrict": {
+          "autoincrement": false,
+          "name": "receiverDistrict",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "receiverAddress": {
+          "autoincrement": false,
+          "name": "receiverAddress",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "receiverZip": {
+          "autoincrement": false,
+          "name": "receiverZip",
+          "type": "varchar(6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createTime": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "createTime",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updateTime": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "updateTime",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "mmall_shipping_id__idx": {
+          "name": "mmall_shipping_id__idx",
+          "columns": [
+            "id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "uniqueConstraints": {
+        "id": {
+          "name": "id",
+          "columns": [
+            "id"
+          ]
+        },
+        "mmall_shipping_id__unique": {
+          "name": "mmall_shipping_id__unique",
+          "columns": [
+            "id"
+          ]
+        }
+      }
+    },
+    "mmall_user": {
+      "name": "mmall_user",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "bigint(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "username": {
+          "autoincrement": false,
+          "name": "username",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password": {
+          "autoincrement": false,
+          "name": "password",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "autoincrement": false,
+          "name": "email",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "phone": {
+          "autoincrement": false,
+          "name": "phone",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "question": {
+          "autoincrement": false,
+          "name": "question",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "answer": {
+          "autoincrement": false,
+          "name": "answer",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "role": {
+          "autoincrement": false,
+          "name": "role",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createTime": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "createTime",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updateTime": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "updateTime",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {
+        "id": {
+          "name": "id",
+          "columns": [
+            "id"
+          ]
+        },
+        "user_name_unique": {
+          "name": "user_name_unique",
+          "columns": [
+            "username"
+          ]
+        }
+      }
+    }
+  },
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

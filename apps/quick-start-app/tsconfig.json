@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "verbatimModuleSyntax": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "incremental": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "jsx": "preserve",
+    "paths": {
+      "~/*": [
+        "./*"
+      ],
+      "~app/*": [
+        "./app/*"
+      ],
+      "~test-utils": [
+        "../config/tests/test-utils"
+      ],
+      "~config/*": [
+        "./config/*"
+      ],
+      "~lib/*": [
+        "./lib/*"
+      ],
+      "~utils/*": [
+        "./utils/*"
+      ],
+      "~components/*": [
+        "./components/*"
+      ],
+      "~ui/*": [
+        "./components/ui/*"
+      ],
+      "~color4bg/*": [
+        "./components/color4bg/*"
+      ],
+      "~server/*": [
+        "./server/*"
+      ],
+      "~features/*": [
+        "./features/*"
+      ],
+      "~layouts/*": [
+        "./layouts/*"
+      ],
+      "~pages/*": [
+        "./pages/*"
+      ],
+      "~public/*": [
+        "../public/*"
+      ],
+      "~themes/*": [
+        "./themes/*"
+      ],
+      "~types/*": [
+        "./types/*"
+      ],
+      "~api/*": [
+        "./pages/api/*"
+      ],
+      "~store/*": [
+        "./store/*"
+      ],
+      "~dal/*": [
+        "./dal/*"
+      ],
+      "~dto/*": [
+        "./dto/*"
+      ],
+      "@bid-ng/common-i18n": [
+        "../../../packages/common-i18n/src/index"
+      ],
+      "@bid-ng/common-i18n/locales/*": [
+        "../../../packages/common-i18n/src/locales/*"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "exclude": [
+    "**/node_modules",
+    "**/.*/*",
+    "./components/ui",
+  ],
+  "include": [
+    ".eslintrc.*",
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.mts",
+    "**/*.js",
+    "**/*.cjs",
+    "**/*.mjs",
+    "**/*.jsx",
+    "**/*.json",
+    ".next/types/**/*.ts"
+  ]
+}

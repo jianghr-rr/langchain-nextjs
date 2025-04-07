@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* :root {
+  --background: 0 0% 100%;
+  --foreground:0, 0%, 9%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: 0, 0%, 4%;
+    --foreground: 0, 0%, 93%;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+} */
+
+.main-title {
+  @apply text-2xl font-bold mb-4;
+  color: #0e7ea3;
+}
+

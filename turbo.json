@@ -1,0 +1,46 @@
+{
+    "$schema": "https://turbo.build/schema.json",
+    "globalDependencies": ["**/.env.*local", "**/tsconfig*.json"],
+    "tasks": {
+      "test": {},
+      "dev": {},
+      "start": {},
+      "test-unit": {},
+      "build": {},
+      "migrations:generate": {},
+      "lint": {
+        "env": ["TIMING"]
+      },
+      "lint-styles": {},
+      "typecheck": {},
+      "build-storybook": {},
+      "clean": {
+        "cache": false
+      },
+      "build-blog-app": {
+        "dependsOn": ["blog-app#build"],
+        "cache": false
+      },
+      "build-mall-app": {
+        "dependsOn": ["mall-app#build"],
+        "cache": false
+      },
+      "build-mall-web": {
+        "dependsOn": ["mall-web#build"],
+        "cache": false
+      },
+      "migrations-generate-main-app": {
+        "dependsOn": ["main-app#migrations:generate"],
+        "cache": false
+      },
+      "build-quick-start-app": {
+        "dependsOn": ["quick-start-app#build"],
+        "cache": false
+      },
+      "start-qs": {
+        "dependsOn": ["quick-start-app#dev"],
+        "cache": false
+      }
+    }
+  }
+  
