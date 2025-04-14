@@ -19,7 +19,9 @@ const initPinecone = async (sessionId: string) => {
       apiKey: process.env.PINECONE_API_KEY!,
     });
     
+    // 用于与 Pinecone 向量数据库进行交互。
     pineconeStore = await PineconeStore.fromExistingIndex(
+      // 用于生成文本的向量嵌入。
       new OpenAIEmbeddings({
         openAIApiKey: process.env.OPENAI_API_KEY,
         configuration: {
@@ -43,6 +45,7 @@ export async function POST(req: NextRequest) {
     // 并行初始化组件
     const [vectorStore, llm] = await Promise.all([
       initPinecone(sessionId),
+      // 用于与 OpenAI 的聊天模型进行交互。
       new ChatOpenAI({
         modelName: process.env.OPENAI_CHAT_MODEL_NAME,
         temperature: 0.5,
@@ -60,6 +63,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 初始化聊天历史（适配 @upstash/redis）
+    // 用于在 Redis 中存储和检索聊天记录。
     const messageHistory = new RedisChatMessageHistory({
       sessionId,
       client: redisClient,
@@ -70,6 +74,7 @@ export async function POST(req: NextRequest) {
     });
 
     // 记忆系统配置
+    // 用于在内存中维护一个有限窗口的聊天历史。
     const memory = new BufferWindowMemory({
       memoryKey: "chat_history",
       chatHistory: messageHistory,
@@ -85,12 +90,16 @@ export async function POST(req: NextRequest) {
       without the chat history. Do NOT answer the question, just
       reformulate it if needed and otherwise return it as is.`;
     
+    // 用于生成和格式化聊天提示。
     const contextualizeQPrompt = ChatPromptTemplate.fromMessages([
       ["system", contextualizeQSystemPrompt],
+      // 用于在聊天提示中插入消息占位符。
       new MessagesPlaceholder("chat_history"),
       ["human", "{input}"],
     ]);
 
+    // 用于创建一个考虑历史上下文的检索器。
+    // 结合历史上下文重构问题
     const historyAwareRetriever = await createHistoryAwareRetriever({
       llm,
       retriever: vectorStore.asRetriever({
@@ -120,12 +129,14 @@ export async function POST(req: NextRequest) {
       ["human", "{input}"],
     ]);
 
+    // 用于将文档内容组合成一个回答
     const questionAnswerChain = await createStuffDocumentsChain({
       llm,
       prompt: qaPrompt,
     });
 
     // 组合检索器和 QA Chain，构建 RAG 流程
+    // 用于创建检索增强生成（RAG）流程。
     const ragChain = await createRetrievalChain({
       retriever: historyAwareRetriever,
       combineDocsChain: questionAnswerChain,

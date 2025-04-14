@@ -9,7 +9,7 @@
   "packageManager": "pnpm@10.7.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "gcm": "genaiscript run genaisrc/gcm.genai.mjs",
+    "gcm": "genaiscript run genaisrc/gcm.genai.mjs --env .env",
     "deps:check": "npx npm-check-updates@latest --configFileName ncurc.yml --workspaces --root --mergeConfig",
     "deps:update": "npx npm-check-updates@latest --configFileName ncurc.yml -u --workspaces --root --mergeConfig",
     "g:lint": "TIMING=1 turbo run lint --cache-dir=.cache/turbo --color",
