@@ -157,7 +157,7 @@ const ChatBotPage = () => {
                     <div className="text-sm font-medium text-emerald-600 dark:text-emerald-200">
                       🔍 Web Search Results
                     </div>
-                    <NewsList news={msg.data || []} />
+                    <NewsList news={(typeof msg.data === 'string') ? JSON.parse(msg.data) : msg.data ?? [] } />
                   </div>
                 ) : msg.type === 'error' ? (
                   <div className="text-red-600 dark:text-red-300">⚠️ {msg.content}</div>

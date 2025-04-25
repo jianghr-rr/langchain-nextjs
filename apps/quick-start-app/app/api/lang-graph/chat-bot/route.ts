@@ -95,7 +95,6 @@ class RedisCheckpointer {
 
   async list(sessionId: string) {
     const messages = await this.client.hget(sessionId, 'messages');
-    console.log('messages::', messages)
     try {
       const parsedMessages = messages ? JSON.parse(messages) : [];
       return parsedMessages;
@@ -162,82 +161,64 @@ function createGraph(sessionId: string, checkpointer: RedisCheckpointer) {
     })
     .addNode("load_checkpoint", async (state) => {
       if (state.checkpointId) {
-        const checkpoint = await checkpointer.get(state.sessionId, state.checkpointId);
-        console.log("加载检查点:", checkpoint);
-        console.log("state", state);
-    
-        if (checkpoint) {
-          // 合并消息并去重
-          const seenIds = new Set<string>();
-          const uniqueMessages = [
-            ...checkpoint.messages,
-            ...state.messages
-          ].filter((msg) => {
-            const id = msg.id || (msg instanceof ToolMessage ? msg.tool_call_id : null);
-            if (!id || seenIds.has(id)) {
-              return false;
-            }
-            seenIds.add(id);
-            return true;
-          });
+        const allMessages = await checkpointer.list(state.sessionId);
 
+        const structuredMessages = allMessages.map((msg: {
+          type: string;
+          data: {
+            content: string;
+            id: string;
+            tool_call_id: string;
+          };
+        }) => {
+          if (msg.type === 'human') {
+            return new HumanMessage({
+              ...msg.data,
+            });
+          } else if (msg.type === 'ai') {
+            return new AIMessage({
+             ...msg.data,
+            });
+          } else if (msg.type === 'tool') {
+            return new ToolMessage({
+             ...msg.data,
+            });
+          } else {
+            return null;
+          }
+        });
+    
+        if (structuredMessages) {
+          const uniqueMessages = [
+            ...structuredMessages,
+            ...state.messages
+          ]
+          console.log('load_checkpoint uniqueMessages:', uniqueMessages);
           state.messages = uniqueMessages;
           return { 
             ...state,
             messages: uniqueMessages, // 保持消息不可变性
-            checkpointId: checkpoint.checkpointId 
           };
         }
-        else {
-            // 合并消息并去重
-            const seenIds = new Set<string>();
-            const uniqueMessages = state.messages.filter((msg) => {
-              const id = msg.id || (msg instanceof ToolMessage ? msg.tool_call_id : null);
-              if (!id || seenIds.has(id)) {
-                return false;
-              }
-              seenIds.add(id);
-              return true;
-            });
-
-            console.log('去重后的消息:', uniqueMessages);
-            state.messages = uniqueMessages;
-            return { 
-              ...state,
-              messages: uniqueMessages, // 保持消息不可变性
-              checkpointId: state.checkpointId // 保留原有的 checkpointId
-            };
-        }
       }
-      return state;    
+      return state;
     })
     .addNode("agent", async (state: z.TypeOf<typeof AgentState>) => {
+      // 只处理最新消息
+      console.log('agent message', state.messages);
       try {
-        // 只处理最新消息
-        console.log('agent message', state.messages);
-        const lastMessage = state.messages[state.messages.length - 1];
-        const response = await llm.invoke([lastMessage]); // 仅使用最后一条消息
-    
-        // 使用合并方式避免重复
-        const seenIds = new Set(state.messages.map(msg => msg.id || (msg instanceof ToolMessage ? msg.tool_call_id : null)));
-        const newMessages = [response].filter(msg => {
-          const id = msg.id || (msg instanceof ToolMessage ? msg.tool_call_id : null);
-          if (!id || seenIds.has(id)) {
-            return false;
-          }
-          seenIds.add(id);
-          return true;
-        });
-    
-        return { 
+        const response = await llm.invoke(state.messages); // 仅使用最后一条消息
+        return {
+          ...state,
           messages: [
             ...state.messages,
-            ...newMessages // 添加去重后的新消息
+            ...(Array.isArray(response) ? response : [response]) // 确保response是数组并展开
           ] 
         };
       } catch (error) {
         console.error("Agent error:", error);
         return { 
+          ...state,
           messages: [
             ...state.messages,
             new AIMessage("服务暂时不可用，请稍后再试")
@@ -363,7 +344,6 @@ export async function POST(req: NextRequest) {
       { messages: initialMessages },
       { streamMode: "values", callbacks: [tracer] }
     )) {
-      console.log('req messages', messages);
   
       for (const message of messages) {
         const messageId = message.id || (message instanceof ToolMessage ? message.tool_call_id : null);
@@ -393,7 +373,6 @@ export async function POST(req: NextRequest) {
     resultMessages.push("服务暂时中断，请刷新页面重试");
   }
 
-  console.log("resultMessages:", resultMessages);
   return NextResponse.json({ 
     text: resultMessages.join('\n'),
     structured: resultMessages.map(msg => ({
@@ -425,8 +404,6 @@ export async function GET(req: NextRequest) {
     // 获取所有检查点数据
     const allMessages = await checkpointer.list(sessionId);
 
-    console.log("allMessages:", allMessages);
-
     if (!allMessages || allMessages.length === 0) {
       return NextResponse.json({
         text: '',
@@ -435,7 +412,6 @@ export async function GET(req: NextRequest) {
     }
 
     // 将消息转换为结构化格式
-    console.log("allMessages:", allMessages);
     const structuredMessages = allMessages.map((msg: {
       type: string;
       data: {
@@ -443,8 +419,9 @@ export async function GET(req: NextRequest) {
         id: string
       };
     }) => ({
-      type: msg.type === 'human' ? 'user' : 'ai',
+      type: msg.type === 'human' ? 'user' : msg.type,
       content: msg.data.content,
+      data: msg.data.content
     }));
 
     return NextResponse.json({ messages: structuredMessages });
