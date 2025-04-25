@@ -205,9 +205,8 @@ function createGraph(sessionId: string, checkpointer: RedisCheckpointer) {
     })
     .addNode("agent", async (state: z.TypeOf<typeof AgentState>) => {
       // 只处理最新消息
-      console.log('agent message', state.messages);
       try {
-        const response = await llm.invoke(state.messages); // 仅使用最后一条消息
+        const response = await llm.invoke(state.messages);
         return {
           ...state,
           messages: [
