@@ -15,7 +15,8 @@ export default [
     height: 400,
   },
   {
-    name: '',
+    name: 'langGraph 多智能体',
+    url: '/lang-graph/multi-agent',
     description: '#e0c3fc → #8ec5fc',
     css: 'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)',
     height: 400,

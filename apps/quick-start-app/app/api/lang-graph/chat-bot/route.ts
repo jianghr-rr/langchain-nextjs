@@ -193,7 +193,6 @@ function createGraph(sessionId: string, checkpointer: RedisCheckpointer) {
             ...structuredMessages,
             ...state.messages
           ]
-          console.log('load_checkpoint uniqueMessages:', uniqueMessages);
           state.messages = uniqueMessages;
           return { 
             ...state,
