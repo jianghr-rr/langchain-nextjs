@@ -22,7 +22,8 @@ export default [
     height: 400,
   },
   {
-    name: '',
+    name: 'langGraph 反思智能体',
+    url: '/lang-graph/reflection-agent',
     description: '#f093fb → #f5576c',
     css: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
     height: 400,
